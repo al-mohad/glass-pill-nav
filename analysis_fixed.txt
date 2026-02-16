@@ -1,0 +1,23 @@
+Resolving dependencies...
+Downloading packages...
+  meta 1.17.0 (1.18.1 available)
+Got dependencies!
+1 package has newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Resolving dependencies in `./example`...
+Downloading packages...
+Got dependencies in `./example`.
+Analyzing glass_pill_nav...                                     
+
+warning • The left operand can't be null, so the right operand is never executed • lib/src/floating_pill_nav_bar.dart:118:23 • dead_null_aware_expression
+  error • Undefined name 'isDark' • lib/src/floating_pill_nav_bar.dart:118:24 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/floating_pill_nav_bar.dart:120:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/widgets/center_action_button.dart:49:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/widgets/center_action_button.dart:54:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/widgets/center_action_button.dart:92:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/widgets/center_action_button.dart:93:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/src/widgets/nav_item_tile.dart:63:45 • deprecated_member_use
+  error • 4 positional arguments expected by 'translateByDouble', but 2 found • lib/src/widgets/shimmer_icon.dart:71:52 • not_enough_positional_arguments
+  error • 4 positional arguments expected by 'translateByDouble', but 2 found • lib/src/widgets/shimmer_icon.dart:73:54 • not_enough_positional_arguments
+
+10 issues found. (ran in 1.5s)
