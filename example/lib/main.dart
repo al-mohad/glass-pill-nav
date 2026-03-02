@@ -182,6 +182,7 @@ class _MainScreenState extends State<MainScreen> {
             enableLiquidEffect: false,
           ),
           onTabTap: (index) => setState(() => _currentIndex = index),
+          centerAction: const GlassPillAction(),
           expandableItems: _expandableItems,
           expandedCentralAction: const Icon(
             Icons.close_rounded,

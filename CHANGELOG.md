@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2026-03-02
+
+### 🛠 Fixes & Improvements
+
+- **Opt-in Center Action**: The `GlassPillNav` and its variants now strictly require `centerAction` to be provided in order to show a central button. The implicit `GlassPillAction` fallback has been removed.
+- **Static Analysis Compliance**: Fixed deprecated references to `Color.alpha`, `Color.withOpacity`, and `Matrix4.translate` to satisfy pub.dev static analysis.
+- **Project Configuration**: Fixed `homepage` and `repository` URLs in `pubspec.yaml`.
+- **Morphing State Detection**: Fixed an issue where the standard `GlassPillNav` was incorrectly treated as `morphing` mode when `onCenterActionTap` was omitted, causing layout overflow errors.
+
 ## [1.1.1] - 2026-03-02
 
 ### 🛠 Fixes

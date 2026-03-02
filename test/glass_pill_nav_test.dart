@@ -10,24 +10,33 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          bottomNavigationBar: StatefulBuilder(
-            builder: (context, setState) {
-              return GlassPillNav(
-                currentIndex: currentIndex,
-                style: const GlassPillNavStyle(
-                  enableShimmer: false, // Disable shimmer for stable testing
+          bottomNavigationBar: Builder(
+            builder: (context) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    return GlassPillNav(
+                      currentIndex: currentIndex,
+                      style: const GlassPillNavStyle(
+                        enableShimmer:
+                            false, // Disable shimmer for stable testing
+                      ),
+                      centerAction: const GlassPillAction(),
+                      onTabTap: (index) => setState(() => currentIndex = index),
+                      items: [
+                        const GlassPillNavItem(
+                          icon: Icons.home,
+                          label: 'Home',
+                        ),
+                        const GlassPillNavItem(
+                          icon: Icons.search,
+                          label: 'Search',
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                onTabTap: (index) => setState(() => currentIndex = index),
-                items: [
-                  const GlassPillNavItem(
-                    icon: Icons.home,
-                    label: 'Home',
-                  ),
-                  const GlassPillNavItem(
-                    icon: Icons.search,
-                    label: 'Search',
-                  ),
-                ],
               );
             },
           ),
@@ -52,19 +61,23 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          bottomNavigationBar: GlassPillNav(
-            currentIndex: 0,
-            style: const GlassPillNavStyle(
-              blurSigma: 25,
-              animationDuration: Duration(seconds: 1),
-              scaleAmount: 1.5,
-              enableShimmer: false,
-              enableLiquidEffect: true,
+          bottomNavigationBar: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: GlassPillNav(
+              currentIndex: 0,
+              style: const GlassPillNavStyle(
+                blurSigma: 25,
+                animationDuration: Duration(seconds: 1),
+                scaleAmount: 1.5,
+                enableShimmer: false,
+                enableLiquidEffect: true,
+              ),
+              centerAction: const GlassPillAction(),
+              items: const [
+                GlassPillNavItem(icon: Icons.home),
+                GlassPillNavItem(icon: Icons.search),
+              ],
             ),
-            items: const [
-              GlassPillNavItem(icon: Icons.home),
-              GlassPillNavItem(icon: Icons.search),
-            ],
           ),
         ),
       ),

@@ -68,8 +68,8 @@ class _GradientRotation extends GradientTransform {
     final double centerWidth = bounds.width / 2;
     final double centerHeight = bounds.height / 2;
     return Matrix4.identity()
-      ..translate(centerWidth, centerHeight, 0.0)
+      ..translateByDouble(centerWidth, centerHeight, 0.0, 1.0)
       ..rotateZ(rotation)
-      ..translate(-centerWidth, -centerHeight, 0.0);
+      ..translateByDouble(-centerWidth, -centerHeight, 0.0, 1.0);
   }
 }

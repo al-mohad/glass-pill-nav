@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'models/glass_pill_nav_item.dart';
 import 'models/glass_pill_nav_style.dart';
-import 'widgets/center_action_button.dart';
 import 'widgets/glass_pill_nav_scope.dart';
 import 'widgets/nav_item_tile.dart';
 import 'widgets/pill_indicator.dart';
@@ -44,6 +43,9 @@ class GlassPillNav extends StatefulWidget {
   /// Whether the central button should support expansion.
   final bool enableExpandableCentral;
 
+  /// Whether the navigation bar is in morphing mode.
+  final bool isMorphing;
+
   const GlassPillNav({
     super.key,
     required this.items,
@@ -55,7 +57,8 @@ class GlassPillNav extends StatefulWidget {
     this.scrollController,
   })  : expandableItems = null,
         expandedCentralAction = null,
-        enableExpandableCentral = false;
+        enableExpandableCentral = false,
+        isMorphing = false;
 
   const GlassPillNav.expandable({
     super.key,
@@ -68,7 +71,8 @@ class GlassPillNav extends StatefulWidget {
     this.style,
     this.scrollController,
     this.enableExpandableCentral = true,
-  }) : onCenterActionTap = null;
+  })  : onCenterActionTap = null,
+        isMorphing = false;
 
   const GlassPillNav.morphing({
     super.key,
@@ -81,7 +85,8 @@ class GlassPillNav extends StatefulWidget {
   })  : expandableItems = null,
         expandedCentralAction = null,
         onCenterActionTap = null,
-        enableExpandableCentral = false;
+        enableExpandableCentral = false,
+        isMorphing = true;
 
   @override
   State<GlassPillNav> createState() => _GlassPillNavState();
@@ -102,11 +107,7 @@ class _GlassPillNavState extends State<GlassPillNav>
   bool _isShrunk = false;
   bool _isMorphed = false;
 
-  bool get _isMorphingMode =>
-      widget.items.isNotEmpty &&
-      widget.expandableItems == null &&
-      widget.onCenterActionTap == null &&
-      !widget.enableExpandableCentral;
+  bool get _isMorphingMode => widget.isMorphing;
 
   @override
   void initState() {
@@ -322,32 +323,29 @@ class _GlassPillNavState extends State<GlassPillNav>
                           builder: (context, constraints) {
                             final bool showItems =
                                 !_isMorphingMode || _isMorphed;
-                            int totalSlots = widget.items.length;
-                            if (widget.centerAction != null ||
-                                widget.enableExpandableCentral ||
-                                _isMorphingMode) {
-                              totalSlots =
-                                  showItems ? widget.items.length + 1 : 1;
-                              if (_isMorphingMode && _isMorphed) totalSlots++;
+                            int totalSlots =
+                                showItems ? widget.items.length : 0;
+                            if (widget.centerAction != null) {
+                              totalSlots += 1;
                             }
-                            final double itemWidth =
-                                constraints.maxWidth / totalSlots;
+                            if (showItems && _isMorphingMode && _isMorphed) {
+                              totalSlots += 1;
+                            }
+                            final double itemWidth = totalSlots > 0
+                                ? constraints.maxWidth / totalSlots
+                                : constraints.maxWidth;
 
                             // Calculate pill position
                             double pillLeft;
                             final int centerSlotIndex =
                                 widget.items.length ~/ 2;
 
-                            if ((widget.centerAction != null ||
-                                    widget.enableExpandableCentral ||
-                                    _isMorphingMode) &&
+                            if (widget.centerAction != null &&
                                 _isCenterPressed) {
                               pillLeft = centerSlotIndex * itemWidth;
                             } else {
                               pillLeft = widget.currentIndex * itemWidth;
-                              if (widget.centerAction != null ||
-                                  widget.enableExpandableCentral ||
-                                  _isMorphingMode) {
+                              if (widget.centerAction != null) {
                                 if (widget.currentIndex >= centerSlotIndex) {
                                   pillLeft =
                                       (widget.currentIndex + 1) * itemWidth;
@@ -388,14 +386,14 @@ class _GlassPillNavState extends State<GlassPillNav>
     final int centerIndex = widget.items.length ~/ 2;
 
     if (!showItems) {
-      return [_buildCenterAction(scrollValue)];
+      if (widget.centerAction != null) {
+        return [_buildCenterAction(scrollValue)];
+      }
+      return [];
     }
 
     for (int i = 0; i < widget.items.length; i++) {
-      if ((widget.centerAction != null ||
-              widget.enableExpandableCentral ||
-              _isMorphingMode) &&
-          i == centerIndex) {
+      if (widget.centerAction != null && i == centerIndex) {
         navWidgets.add(
           Expanded(
             child: _buildCenterAction(scrollValue),
@@ -419,9 +417,7 @@ class _GlassPillNavState extends State<GlassPillNav>
     }
 
     // Edge case handling for empty list or center at the end
-    if ((widget.centerAction != null ||
-            widget.enableExpandableCentral ||
-            _isMorphingMode) &&
+    if (widget.centerAction != null &&
         navWidgets.length < 2 &&
         widget.items.isEmpty) {
       navWidgets.add(
@@ -429,9 +425,7 @@ class _GlassPillNavState extends State<GlassPillNav>
           child: _buildCenterAction(scrollValue),
         ),
       );
-    } else if ((widget.centerAction != null ||
-            widget.enableExpandableCentral ||
-            _isMorphingMode) &&
+    } else if (widget.centerAction != null &&
         centerIndex == widget.items.length &&
         widget.items.isNotEmpty) {
       navWidgets.add(
@@ -542,7 +536,7 @@ class _GlassPillNavState extends State<GlassPillNav>
                   children: [
                     Opacity(
                       opacity: (1 - _expandAnimation.value).clamp(0.0, 1.0),
-                      child: widget.centerAction ?? const GlassPillAction(),
+                      child: widget.centerAction!,
                     ),
                     Opacity(
                       opacity: _expandAnimation.value.clamp(0.0, 1.0),
@@ -550,7 +544,7 @@ class _GlassPillNavState extends State<GlassPillNav>
                     ),
                   ],
                 )
-              : (widget.centerAction ?? const GlassPillAction()),
+              : widget.centerAction!,
         );
       },
     );
@@ -562,8 +556,7 @@ class _GlassPillNavState extends State<GlassPillNav>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: style.baseColor
-            .withValues(alpha: style.baseColor.alpha / 255.0 * 0.8),
+        color: style.baseColor.withValues(alpha: style.baseColor.a * 0.8),
         borderRadius: BorderRadius.circular(style.borderRadius),
         border: Border.all(
           color: style.borderColor,

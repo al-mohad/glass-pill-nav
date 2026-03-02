@@ -46,12 +46,12 @@ class GlassPillAction extends StatelessWidget {
         // Outer glow/shadow
         boxShadow: [
           BoxShadow(
-            color: bodyColors.first.withOpacity(0.3),
+            color: bodyColors.first.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(-4, 0),
           ),
           BoxShadow(
-            color: bodyColors.last.withOpacity(0.3),
+            color: bodyColors.last.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(4, 0),
           ),
