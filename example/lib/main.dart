@@ -36,7 +36,7 @@ enum NavMode { standard, expandable, morphing }
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  NavMode _navMode = NavMode.expandable;
+  NavMode _navMode = NavMode.standard;
   late ScrollController _scrollController;
 
   @override

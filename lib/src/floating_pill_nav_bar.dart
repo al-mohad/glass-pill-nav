@@ -283,6 +283,9 @@ class _GlassPillNavState extends State<GlassPillNav>
                 scrollValue,
               )!;
 
+              final screenWidth = MediaQuery.of(context).size.width;
+              final double targetWidth = screenWidth - currentMargin.horizontal;
+
               return GlassPillNavScope(
                 style: style,
                 shimmerController: _shimmerController!,
@@ -291,7 +294,9 @@ class _GlassPillNavState extends State<GlassPillNav>
                   curve: Curves.easeOutBack,
                   margin: currentMargin,
                   height: currentHeight,
-                  width: _isMorphingMode && !_isMorphed ? style.height : null,
+                  width: _isMorphingMode
+                      ? (_isMorphed ? targetWidth : style.height)
+                      : null,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(style.borderRadius),
                     child: BackdropFilter(

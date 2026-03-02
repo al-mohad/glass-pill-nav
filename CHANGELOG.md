@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-03-02
+
+### 🛠 Fixes
+
+- **AnimatedContainer Interpolation**: Resolved a crash in `GlassPillNav.morphing` mode where `AnimatedContainer` failed to interpolate between finite and unbounded constraints. Width transitions are now explicitly calculated using screen dimensions.
+
 ## [1.1.0] - 2026-03-02
 
 ### ✨ New Features
