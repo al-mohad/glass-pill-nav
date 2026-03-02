@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-03-02
+
+### ✨ New Features
+
+- **Expandable Mode**: `GlassPillNav.expandable` named constructor for revealing extra tab items from a floating central action button.
+- **Morphing Variant**: `GlassPillNav.morphing` named constructor that starts as a single button and expands horizontally to reveal the full navigation bar.
+- **Scroll-Reactive Behavior**: Navigation bar now automatically shrinks when scrolling down and expands when scrolling up or tapping (requires a `ScrollController`).
+- **Smooth Morphing Animations**: Center action button and navigation bar now feature fluid transitions and GPU-accelerated morphing effects.
+
+### 🛠 Improvements & Fixes
+
+- **Unified Architecture**: Integrated expandable logic directly into the main `GlassPillNav` widget.
+- **Overflow Prevention**: Re-engineered layout to automatically hide labels and scale icons in shrunk mode, preventing `RenderFlex` overflows.
+- **Enhanced Design System**: Added new tokens to `GlassPillNavStyle` for refined control over expanded/shrunk states.
+- **API Modernization**: Resolved Flutter deprecation warnings for Color and Matrix4 APIs.
+- **Redesigned Demo**: Updated example app with a mode switcher and interactive scroll demonstrations.
+
 ## [1.0.1] - 2026-02-16
 
 ### 🔄 Navigation Enhancements

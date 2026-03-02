@@ -32,58 +32,74 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
+enum NavMode { standard, expandable, morphing }
+
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  NavMode _navMode = NavMode.expandable;
+  late ScrollController _scrollController;
 
-  final List<Widget> _screens = [
-    const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.home_rounded, size: 100, color: Colors.blueAccent),
-          SizedBox(height: 16),
-          Text('Home Screen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-    const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.people_outline_rounded,
-              size: 100, color: Colors.blueAccent),
-          SizedBox(height: 16),
-          Text('Social Screen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-    const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.chat_bubble_outline_rounded,
-              size: 100, color: Colors.blueAccent),
-          SizedBox(height: 16),
-          Text('Chat Screen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-    const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.person_outline_rounded,
-              size: 100, color: Colors.blueAccent),
-          SizedBox(height: 16),
-          Text('Profile Screen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  List<Widget> get _screens => [
+        _buildScrollableScreen(
+          'Home Screen',
+          Icons.home_rounded,
+          Colors.blueAccent,
+        ),
+        _buildScrollableScreen(
+          'Social Screen',
+          Icons.people_outline_rounded,
+          Colors.blueAccent,
+        ),
+        _buildScrollableScreen(
+          'Chat Screen',
+          Icons.chat_bubble_outline_rounded,
+          Colors.blueAccent,
+        ),
+        _buildScrollableScreen(
+          'Profile Screen',
+          Icons.person_outline_rounded,
+          Colors.blueAccent,
+        ),
+      ];
+
+  Widget _buildScrollableScreen(String title, IconData icon, Color color) {
+    return ListView.builder(
+      controller: _scrollController,
+      padding: const EdgeInsets.only(top: 120, bottom: 120),
+      itemCount: 50,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            children: [
+              Icon(icon, size: 100, color: color),
+              const SizedBox(height: 16),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 40),
+            ],
+          );
+        }
+        return ListTile(
+          title: Text('Scrollable Item $index'),
+          subtitle: const Text('Scroll down to see the nav bar collapse'),
+          leading: const CircleAvatar(child: Icon(Icons.star_outline)),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,81 +134,128 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           _screens[_currentIndex],
-        ],
-      ),
-      bottomNavigationBar: GlassPillNav(
-        currentIndex: _currentIndex,
-        style: GlassPillNavStyle.nebula().copyWith(
-          animationDuration: const Duration(milliseconds: 400),
-          enableLiquidEffect: false,
-        ),
-        onTabTap: (index) => setState(() => _currentIndex = index),
-        centerAction: const GlassPillAction(),
-        onCenterActionTap: () {
-          showModalBottomSheet(
-            context: context,
-            backgroundColor: Colors.transparent,
-            builder: (context) => Container(
-              height: 300,
+
+          Positioned(
+            top: 60,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF1A1A1A),
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(32)),
-                border: Border.all(color: Colors.white10),
+                color: Colors.white12,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white24),
               ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.white24,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const Spacer(),
-                  const Icon(Icons.add_circle_outline,
-                      size: 64, color: Colors.blue),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Create New Item',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: Text(
-                      'This is a custom action button demonstration using GlassPillNav.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ),
-                  const Spacer(),
-                ],
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<NavMode>(
+                  value: _navMode,
+                  dropdownColor: const Color(0xFF1A1A1A),
+                  borderRadius: BorderRadius.circular(12),
+                  onChanged: (v) => setState(() => _navMode = v!),
+                  items: NavMode.values.map((mode) {
+                    return DropdownMenuItem(
+                      value: mode,
+                      child: Text(
+                        mode.name.toUpperCase(),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
-          );
-        },
-        items: const [
-          GlassPillNavItem(
-            icon: Icons.home_rounded,
-            label: 'Home',
-          ),
-          GlassPillNavItem(
-            icon: Icons.people_outline_rounded,
-          ),
-          GlassPillNavItem(
-            icon: Icons.chat_bubble_outline_rounded,
-          ),
-          GlassPillNavItem(
-            icon: Icons.person_outline_rounded,
-            label: 'Profile',
           ),
         ],
+      ),
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  Widget _buildBottomNav() {
+    switch (_navMode) {
+      case NavMode.expandable:
+        return GlassPillNav.expandable(
+          currentIndex: _currentIndex,
+          scrollController: _scrollController,
+          style: GlassPillNavStyle.nebula().copyWith(
+            animationDuration: const Duration(milliseconds: 400),
+            enableLiquidEffect: false,
+          ),
+          onTabTap: (index) => setState(() => _currentIndex = index),
+          expandableItems: _expandableItems,
+          expandedCentralAction: const Icon(
+            Icons.close_rounded,
+            color: Colors.white,
+            size: 28,
+          ),
+          items: _navItems,
+        );
+      case NavMode.morphing:
+        return GlassPillNav.morphing(
+          currentIndex: _currentIndex,
+          scrollController: _scrollController,
+          style: GlassPillNavStyle.nebula().copyWith(
+            animationDuration: const Duration(milliseconds: 400),
+            enableLiquidEffect: false,
+          ),
+          onTabTap: (index) => setState(() => _currentIndex = index),
+          centerAction:
+              const Icon(Icons.grid_view_rounded, color: Colors.white),
+          items: _navItems,
+        );
+      case NavMode.standard:
+        return GlassPillNav(
+          currentIndex: _currentIndex,
+          scrollController: _scrollController,
+          style: GlassPillNavStyle.nebula().copyWith(
+            animationDuration: const Duration(milliseconds: 400),
+            enableLiquidEffect: false,
+          ),
+          onTabTap: (index) => setState(() => _currentIndex = index),
+          centerAction: const GlassPillAction(),
+          onCenterActionTap: () =>
+              _showSnackBar(context, 'Center Action tapped'),
+          items: _navItems,
+        );
+    }
+  }
+
+  List<GlassPillNavItem> get _navItems => const [
+        GlassPillNavItem(icon: Icons.home_rounded, label: 'Home'),
+        GlassPillNavItem(icon: Icons.people_outline_rounded),
+        GlassPillNavItem(icon: Icons.chat_bubble_outline_rounded),
+        GlassPillNavItem(icon: Icons.person_outline_rounded, label: 'Profile'),
+      ];
+
+  List<GlassPillNavItem> get _expandableItems => [
+        GlassPillNavItem(
+          icon: Icons.layers_outlined,
+          label: 'Views',
+          onTap: () => _showSnackBar(context, 'Views tapped'),
+        ),
+        GlassPillNavItem(
+          icon: Icons.settings_outlined,
+          label: 'Settings',
+          onTap: () => _showSnackBar(context, 'Settings tapped'),
+        ),
+        GlassPillNavItem(
+          icon: Icons.add_to_home_screen_outlined,
+          label: 'Add Device',
+          onTap: () => _showSnackBar(context, 'Add Device tapped'),
+        ),
+        GlassPillNavItem(
+          icon: Icons.qr_code_scanner_outlined,
+          label: 'Scan',
+          onTap: () => _showSnackBar(context, 'Scan tapped'),
+        ),
+      ];
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }

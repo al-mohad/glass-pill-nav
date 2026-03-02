@@ -50,6 +50,18 @@ class GlassPillNavStyle {
   /// Whether to enable the liquid shader effect for the pill indicator.
   final bool enableLiquidEffect;
 
+  /// The height of the navigation bar when shrunk (collapsed by scroll).
+  final double shrunkHeight;
+
+  /// Duration of the expansion/collapse animation (morphing).
+  final Duration expandDuration;
+
+  /// Curve of the expansion animation.
+  final Curve expandCurve;
+
+  /// Curve of the collapse animation.
+  final Curve collapseCurve;
+
   const GlassPillNavStyle({
     this.height = 70,
     this.borderRadius = 35,
@@ -67,6 +79,10 @@ class GlassPillNavStyle {
     this.enableScaleAnimation = true,
     this.enableShimmer = true,
     this.enableLiquidEffect = false,
+    this.shrunkHeight = 44,
+    this.expandDuration = const Duration(milliseconds: 400),
+    this.expandCurve = Curves.easeOutBack,
+    this.collapseCurve = Curves.easeInCubic,
   });
 
   /// Resolves the style using the current theme.
@@ -97,6 +113,11 @@ class GlassPillNavStyle {
       enableScaleAnimation: style?.enableScaleAnimation ?? true,
       enableShimmer: style?.enableShimmer ?? true,
       enableLiquidEffect: style?.enableLiquidEffect ?? false,
+      shrunkHeight: style?.shrunkHeight ?? 44,
+      expandDuration:
+          style?.expandDuration ?? const Duration(milliseconds: 400),
+      expandCurve: style?.expandCurve ?? Curves.easeOutBack,
+      collapseCurve: style?.collapseCurve ?? Curves.easeInCubic,
     );
   }
 
@@ -117,6 +138,10 @@ class GlassPillNavStyle {
     bool? enableScaleAnimation,
     bool? enableShimmer,
     bool? enableLiquidEffect,
+    double? shrunkHeight,
+    Duration? expandDuration,
+    Curve? expandCurve,
+    Curve? collapseCurve,
   }) {
     return GlassPillNavStyle(
       height: height ?? this.height,
@@ -135,6 +160,10 @@ class GlassPillNavStyle {
       enableScaleAnimation: enableScaleAnimation ?? this.enableScaleAnimation,
       enableShimmer: enableShimmer ?? this.enableShimmer,
       enableLiquidEffect: enableLiquidEffect ?? this.enableLiquidEffect,
+      shrunkHeight: shrunkHeight ?? this.shrunkHeight,
+      expandDuration: expandDuration ?? this.expandDuration,
+      expandCurve: expandCurve ?? this.expandCurve,
+      collapseCurve: collapseCurve ?? this.collapseCurve,
     );
   }
 

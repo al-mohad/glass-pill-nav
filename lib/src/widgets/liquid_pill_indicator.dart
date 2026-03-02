@@ -110,10 +110,10 @@ class LiquidPainter extends CustomPainter {
     shader.setFloat(0, time);
     shader.setFloat(1, size.width);
     shader.setFloat(2, size.height);
-    shader.setFloat(3, color.red / 255.0);
-    shader.setFloat(4, color.green / 255.0);
-    shader.setFloat(5, color.blue / 255.0);
-    shader.setFloat(6, color.alpha / 255.0);
+    shader.setFloat(3, color.r);
+    shader.setFloat(4, color.g);
+    shader.setFloat(5, color.b);
+    shader.setFloat(6, color.a);
     shader.setFloat(7, pillPos.dx);
     shader.setFloat(8, pillPos.dy);
     shader.setFloat(9, warp);
